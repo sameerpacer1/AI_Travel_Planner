@@ -39,10 +39,8 @@ export class GeminiService {
 
     try {
       const client = this.getClient();
-      // Try gemini-3.5-flash-lite first, fallback to gemini-3.8-flash if needed
-      const modelName = 'gemini-3.5-flash-lite';
       const model = client.getGenerativeModel({
-        model: modelName,
+        model: 'gemini-3.5-flash-lite',
         generationConfig: {
           responseMimeType: 'application/json',
           temperature: 0.7,

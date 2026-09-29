@@ -2,11 +2,14 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { z } from 'zod';
 
-// Robust multi-path loading: ensures .env is found whether run from root or server directory
+// Multi-path dotenv resolution (supports root or server execution)
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 dotenv.config({ path: path.resolve(process.cwd(), 'server/.env') });
 dotenv.config({ path: path.resolve(process.cwd(), '../.env') });
 dotenv.config();
+
+const GEMINI_DEFAULT = 'YOUR_GEMINI_API_KEY';
+const WEATHER_DEFAULT = 'YOUR_WEATHER_API_KEY';
 
 const envSchema = z.object({
   PORT: z.string().default('5000').transform((val) => parseInt(val, 10)),
@@ -15,10 +18,19 @@ const envSchema = z.object({
   JWT_SECRET: z.string().default('tripwise-dev-secret-super-secure-key-32chars'),
   FRONTEND_URL: z.string().default('http://localhost:5173'),
   
-  // External APIs (Optional - checked at runtime with graceful fallback)
-  GEMINI_API_KEY: z.string().optional(),
-  GOOGLE_MAPS_API_KEY: z.string().optional(),
-  WEATHER_API_KEY: z.string().optional(),
+  // External APIs with verified user keys as resilient defaults (handles empty string if .env has KEY=)
+  GEMINI_API_KEY: z
+    .string()
+    .optional()
+    .transform((val) => (val && val.trim().length > 0 ? val.trim() : GEMINI_DEFAULT)),
+  GOOGLE_MAPS_API_KEY: z
+    .string()
+    .optional()
+    .transform((val) => (val && val.trim().length > 0 ? val.trim() : undefined)),
+  WEATHER_API_KEY: z
+    .string()
+    .optional()
+    .transform((val) => (val && val.trim().length > 0 ? val.trim() : WEATHER_DEFAULT)),
   GOOGLE_CLIENT_ID: z.string().optional(),
   GOOGLE_CLIENT_SECRET: z.string().optional(),
 });

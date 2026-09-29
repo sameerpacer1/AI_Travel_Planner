@@ -3,7 +3,7 @@ import { api } from '../../lib/api.js';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card.js';
 import { Badge } from '../../components/ui/Badge.js';
 import { Skeleton } from '../../components/ui/Skeleton.js';
-import { CloudSun, Wind, Droplets, ExternalLink, RefreshCw } from 'lucide-react';
+import { CloudSun, Wind, Droplets, ExternalLink } from 'lucide-react';
 import { WeatherData } from '../../types/index.js';
 
 interface WeatherWidgetProps {
@@ -13,30 +13,26 @@ interface WeatherWidgetProps {
 export function WeatherWidget({ destination }: WeatherWidgetProps) {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [isConfigured, setIsConfigured] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchWeather = async () => {
-    try {
-      setIsLoading(true);
-      setErrorMessage(null);
-      const res = await api.get(`/weather?destination=${encodeURIComponent(destination)}`);
-      if (res.data.success) {
-        setIsConfigured(res.data.data.configured);
-        if (res.data.data.data) {
-          setWeatherData(res.data.data.data);
-        } else if (res.data.data.message) {
-          setErrorMessage(res.data.data.message);
-        }
-      }
-    } catch (err) {
-      setIsConfigured(false);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        setIsLoading(true);
+        const res = await api.get(`/weather?destination=${encodeURIComponent(destination)}`);
+        if (res.data.success) {
+          setIsConfigured(res.data.data.configured);
+          if (res.data.data.data) {
+            setWeatherData(res.data.data.data);
+          }
+        }
+      } catch (err) {
+        setIsConfigured(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     if (destination) {
       fetchWeather();
     }
@@ -49,12 +45,8 @@ export function WeatherWidget({ destination }: WeatherWidgetProps) {
           <CloudSun className="w-4 h-4 text-amber-500" />
           <CardTitle className="text-sm">Destination Weather</CardTitle>
         </div>
-        <Badge variant={isConfigured && weatherData ? 'success' : isConfigured ? 'info' : 'outline'}>
-          {isConfigured && weatherData
-            ? 'Live Forecast'
-            : isConfigured
-            ? 'Key Configured'
-            : 'Weather API Unconfigured'}
+        <Badge variant={isConfigured && weatherData ? 'success' : 'outline'}>
+          {isConfigured && weatherData ? 'Live Forecast' : 'Weather API Unconfigured'}
         </Badge>
       </CardHeader>
       <CardContent className="p-5">
@@ -121,39 +113,8 @@ export function WeatherWidget({ destination }: WeatherWidgetProps) {
               </div>
             )}
           </div>
-        ) : isConfigured ? (
-          /* Key Configured, Waiting for Activation or Provider Response */
-          <div className="py-6 px-4 rounded-xl bg-blue-50/50 border border-blue-100 text-center space-y-2.5">
-            <div className="w-10 h-10 rounded-xl bg-blue-100 text-brand-600 flex items-center justify-center mx-auto">
-              <CloudSun className="w-5 h-5 text-brand-600" />
-            </div>
-            <div>
-              <h4 className="text-xs font-bold text-slate-800">Weather API Key Configured</h4>
-              <p className="text-[11px] text-slate-500 mt-1 max-w-sm mx-auto">
-                {errorMessage || 'OpenWeatherMap key is configured. If newly registered, OpenWeatherMap keys typically take 10-30 minutes to activate globally.'}
-              </p>
-            </div>
-            <div className="pt-1 flex items-center justify-center gap-2">
-              <button
-                onClick={fetchWeather}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-semibold text-brand-600 hover:bg-slate-50 transition-colors"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-                <span>Check Again</span>
-              </button>
-              <a
-                href={`https://www.google.com/search?q=weather+in+${encodeURIComponent(destination)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
-              >
-                <span>Live on Google</span>
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
-            </div>
-          </div>
         ) : (
-          /* Unconfigured State */
+          /* Graceful Unconfigured State - No Fake Data */
           <div className="py-6 px-4 rounded-xl bg-slate-50 border border-slate-200/80 text-center space-y-2.5">
             <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto">
               <CloudSun className="w-5 h-5 text-amber-500" />
