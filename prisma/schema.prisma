@@ -1,0 +1,51 @@
+// Prisma Schema for TripWise
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  passwordHash  String
+  emailVerified Boolean   @default(false)
+  googleId      String?   @unique
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  trips         Trip[]
+
+  @@map("users")
+}
+
+model Trip {
+  id                      String   @id @default(uuid())
+  userId                  String
+  user                    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title                   String
+  origin                  String
+  destination             String
+  startDate               DateTime
+  endDate                 DateTime
+  travelers               Int      @default(1)
+  budget                  Float
+  currency                String   @default("INR")
+  travelStyle             String   @default("balanced")
+  interests               String[]
+  transportPreference     String   @default("any")
+  accommodationPreference String   @default("any")
+  additionalPreferences   String?
+  itinerary               Json?
+  isGenerated             Boolean  @default(false)
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  @@index([userId])
+  @@index([destination])
+  @@map("trips")
+}
