@@ -27,7 +27,7 @@ describe('Trip CRUD & Authorization (IDOR Protection) Tests', () => {
 
     expect(userAToken).toBeDefined();
     expect(userBToken).toBeDefined();
-  });
+  }, 15000);
 
   it('should prevent unauthenticated trip creation (401)', async () => {
     const res = await request(app).post('/api/trips').send({

@@ -10,6 +10,32 @@ export type TravelStyle = 'budget' | 'balanced' | 'luxury' | 'adventure' | 'rela
 export type TransportPreference = 'flight' | 'train' | 'bus' | 'self_drive' | 'rental_car' | 'public_transit' | 'any';
 export type AccommodationPreference = 'hostel' | 'budget_hotel' | 'mid_range_hotel' | 'luxury_resort' | 'homestay' | 'any';
 
+export interface RouteModeDetails {
+  mode: 'flight' | 'train' | 'bus' | 'car';
+  label: string;
+  durationText: string;
+  durationMinutes: number;
+  distanceKm: number;
+  distanceText: string;
+  speedKmH: number;
+  recommended: boolean;
+  notes?: string;
+}
+
+export interface RouteOverview {
+  origin: string;
+  destination: string;
+  straightDistanceKm?: number;
+  roadDistanceKm?: number;
+  distanceText: string;
+  primaryMode: 'flight' | 'train' | 'bus' | 'car' | string;
+  primaryDurationText: string;
+  primaryDurationMinutes?: number;
+  modes?: RouteModeDetails[];
+  googleMapsUrl?: string;
+  embedMapUrl?: string;
+}
+
 export interface Activity {
   time: string;
   title: string;
@@ -19,6 +45,9 @@ export interface Activity {
   category: 'sightseeing' | 'food' | 'adventure' | 'culture' | 'relaxation' | 'shopping' | 'travel' | 'nature' | 'nightlife';
   location?: string;
   reason: string;
+  distanceFromPrev?: string;
+  travelTimeFromPrev?: string;
+  transitMode?: string;
 }
 
 export interface ItineraryDay {
@@ -46,6 +75,7 @@ export interface Itinerary {
   days: ItineraryDay[];
   travelTips?: string[];
   packingSuggestions?: string[];
+  routeOverview?: RouteOverview;
 }
 
 export interface Trip {

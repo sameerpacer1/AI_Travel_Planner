@@ -9,6 +9,7 @@ import { Modal } from '../components/ui/Modal.js';
 import { Skeleton } from '../components/ui/Skeleton.js';
 import { WeatherWidget } from '../features/weather/WeatherWidget.js';
 import { MapWidget } from '../features/map/MapWidget.js';
+import { RouteOverviewCard } from '../features/route/RouteOverviewCard.js';
 import { formatCurrency, formatDate, getDaysBetween } from '../lib/utils.js';
 import {
   MapPin,
@@ -22,6 +23,8 @@ import {
   Lightbulb,
   Backpack,
   ArrowLeft,
+  Navigation,
+  ExternalLink,
 } from 'lucide-react';
 
 const REGENERATE_MODIFIERS = [
@@ -313,6 +316,16 @@ export function TripDetailPage() {
         </Card>
       )}
 
+      {/* ROUTE DISTANCE & TRAVEL TIME OVERVIEW */}
+      {trip && (
+        <RouteOverviewCard
+          origin={trip.origin}
+          destination={trip.destination}
+          preferredTransport={trip.transportPreference}
+          initialRoute={itinerary?.routeOverview}
+        />
+      )}
+
       {/* MAIN TWO-COLUMN CONTENT */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
@@ -427,15 +440,50 @@ export function TripDetailPage() {
                               {/* Location & Duration metadata */}
                               <div className="flex flex-wrap items-center gap-4 text-[11px] text-slate-500 pt-1">
                                 {activity.location && (
-                                  <span className="flex items-center gap-1 font-medium">
-                                    <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                                  <span className="flex items-center gap-1 font-medium text-slate-700">
+                                    <MapPin className="w-3.5 h-3.5 text-brand-500" />
                                     {activity.location}
                                   </span>
                                 )}
                                 <span className="flex items-center gap-1 font-medium">
                                   <Clock className="w-3.5 h-3.5 text-slate-400" />
-                                  {activity.durationMinutes} mins
+                                  Duration: {activity.durationMinutes} mins
                                 </span>
+                              </div>
+
+                              {/* Distance & Travel Time to Reach Destination */}
+                              <div className="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-[11px]">
+                                <div className="flex items-center gap-1.5 font-semibold text-slate-700">
+                                  <Navigation className="w-3.5 h-3.5 text-brand-600 shrink-0" />
+                                  <span>
+                                    {activity.distanceFromPrev ? (
+                                      <span>Distance: <strong className="text-slate-900">{activity.distanceFromPrev}</strong></span>
+                                    ) : (
+                                      <span>Distance: <strong className="text-slate-900">{actIdx === 0 && day.day === 1 ? `Direct from ${trip.origin}` : 'Local stop'}</strong></span>
+                                    )}
+                                    <span className="mx-1 text-slate-300">•</span>
+                                    <span>
+                                      Travel Time: <strong className="text-brand-700">{activity.travelTimeFromPrev || (actIdx === 0 && day.day === 1 ? 'Scheduled Arrival' : '~15-20 mins')}</strong>
+                                    </span>
+                                    {activity.transitMode && (
+                                      <span className="text-slate-500 font-normal"> ({activity.transitMode})</span>
+                                    )}
+                                  </span>
+                                </div>
+
+                                {activity.location && (
+                                  <a
+                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                      `${activity.location}, ${trip.destination}`
+                                    )}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-brand-600 hover:text-brand-700 hover:underline shrink-0"
+                                  >
+                                    <span>Directions</span>
+                                    <ExternalLink className="w-3 h-3" />
+                                  </a>
+                                )}
                               </div>
 
                               {/* TRANSPARENT AI REASONING */}
@@ -499,7 +547,12 @@ export function TripDetailPage() {
         {/* RIGHT COLUMN: WEATHER & MAP */}
         <div className="lg:col-span-4 space-y-6">
           <WeatherWidget destination={trip.destination} />
-          <MapWidget destination={trip.destination} />
+          <MapWidget
+            destination={trip.destination}
+            origin={trip.origin}
+            preferredTransport={trip.transportPreference}
+            routeOverview={itinerary?.routeOverview}
+          />
         </div>
 
       </div>
