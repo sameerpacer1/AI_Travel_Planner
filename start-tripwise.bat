@@ -1,17 +1,18 @@
 @echo off
-title TripWise - AI Travel Planner
+title TripWise AI Travel Planner
 color 0A
+
+:: Always navigate to the folder where this batch file is located
+cd /d "%~dp0"
+
 echo ========================================================
 echo   Starting TripWise (AI-Powered Travel Planner)
 echo ========================================================
 echo.
-
-:: Free up ports 5000 and 5173 if occupied by old process
-for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":5000" ^| findstr "LISTENING"') do taskkill /f /pid %%a >nul 2>&1
-for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":5173" ^| findstr "LISTENING"') do taskkill /f /pid %%a >nul 2>&1
-
-echo [*] Launching TripWise Backend (Port 5000) and Frontend (Port 5173)...
+echo [*] Folder: %CD%
+echo [*] Starting Frontend (Port 5173) and Backend (Port 5000)...
 echo [*] Open http://localhost:5173 in your browser
 echo.
+
 npm run dev
 pause
