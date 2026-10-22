@@ -10,6 +10,8 @@ import { Skeleton } from '../components/ui/Skeleton.js';
 import { WeatherWidget } from '../features/weather/WeatherWidget.js';
 import { MapWidget } from '../features/map/MapWidget.js';
 import { RouteOverviewCard } from '../features/route/RouteOverviewCard.js';
+import { VisitedPlacesGallery } from '../features/places/VisitedPlacesGallery.js';
+import { getDestinationCover, getActivityImage } from '../lib/placeImages.js';
 import { formatCurrency, formatDate, getDaysBetween } from '../lib/utils.js';
 import {
   MapPin,
@@ -183,6 +185,42 @@ export function TripDetailPage() {
         </div>
       </div>
 
+      {/* DESTINATION COVER HERO BANNER */}
+      <div className="relative rounded-3xl overflow-hidden shadow-float border border-slate-200/80 bg-slate-900 group">
+        <div className="relative h-60 sm:h-72 w-full overflow-hidden">
+          <img
+            src={getDestinationCover(trip.destination)}
+            alt={trip.destination}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 brightness-[0.75]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+          
+          <div className="absolute top-4 right-4">
+            <span className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-xs font-bold text-white border border-white/20 shadow-xs">
+              📸 {trip.destination} Visual Guide
+            </span>
+          </div>
+
+          <div className="absolute bottom-5 left-6 sm:left-8 right-6 text-white space-y-2">
+            <div className="flex items-center gap-2 flex-wrap">
+              <Badge variant="success" className="shadow-xs bg-emerald-500/90 text-white border-0">
+                <Sparkles className="w-3 h-3" />
+                {trip.isGenerated ? 'AI Verified Plan' : 'Draft'}
+              </Badge>
+              <span className="px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-semibold text-white">
+                {trip.origin} ➔ {trip.destination}
+              </span>
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white drop-shadow-sm">
+              {trip.title}
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-200 font-medium capitalize">
+              Style: <strong>{trip.travelStyle}</strong> • Transport: <strong>{trip.transportPreference}</strong> • Stay: <strong>{trip.accommodationPreference.replace('_', ' ')}</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* HEADER HERO CARD */}
       <div className="rounded-3xl bg-white border border-slate-200/80 p-6 sm:p-8 shadow-subtle">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
@@ -326,6 +364,9 @@ export function TripDetailPage() {
         />
       )}
 
+      {/* MUST-VISIT PLACES & PHOTO GALLERY */}
+      {trip && <VisitedPlacesGallery destination={trip.destination} />}
+
       {/* MAIN TWO-COLUMN CONTENT */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
@@ -428,6 +469,26 @@ export function TripDetailPage() {
                                     {activity.estimatedCost > 0
                                       ? formatCurrency(activity.estimatedCost, itinerary.currency)
                                       : 'Free'}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Visited Place Photo Banner */}
+                              <div className="relative h-44 sm:h-52 w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-200/60 shadow-xs group/img">
+                                <img
+                                  src={getActivityImage(activity.title, activity.location, activity.category, trip.destination)}
+                                  alt={activity.title}
+                                  loading="lazy"
+                                  className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-transparent to-black/15" />
+                                <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white">
+                                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md text-white/95 flex items-center gap-1">
+                                    <MapPin className="w-3 h-3 text-brand-300" />
+                                    {activity.location || trip.destination}
+                                  </span>
+                                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-white/20 backdrop-blur-md text-white">
+                                    {activity.category}
                                   </span>
                                 </div>
                               </div>

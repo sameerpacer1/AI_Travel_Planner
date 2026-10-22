@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../features/auth/AuthContext.js';
 import { Button } from '../components/ui/Button.js';
 import { Badge } from '../components/ui/Badge.js';
+import { FeaturedDestinationsSection } from '../features/places/FeaturedDestinationsSection.js';
 import {
   Sparkles,
   ArrowRight,
@@ -151,7 +152,10 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* 2. HOW IT WORKS */}
+      {/* 2. FEATURED DESTINATIONS & VISITED PLACES */}
+      <FeaturedDestinationsSection />
+
+      {/* 3. HOW IT WORKS */}
       <section id="how-it-works" className="py-20 bg-white border-y border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
