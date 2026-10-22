@@ -49,3 +49,22 @@ model Trip {
   @@index([destination])
   @@map("trips")
 }
+
+model Inquiry {
+  id              String   @id @default(uuid())
+  name            String
+  email           String
+  phone           String?
+  destination     String?
+  travel_dates    String?
+  travelers_count Int?     @default(1)
+  budget          String?
+  message         String?
+  status          String   @default("pending")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([email])
+  @@map("inquiries")
+}

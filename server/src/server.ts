@@ -13,7 +13,7 @@ const server = app.listen(PORT, async () => {
   // Database check
   const dbHealth = await checkDbConnection();
   if (dbHealth.connected) {
-    console.log(`✅ Database: Connected to PostgreSQL/Neon`);
+    console.log(`✅ Database: Connected to Supabase PostgreSQL Database (ai-travel-planner)`);
   } else {
     console.log(`ℹ️  Database: Using resilient in-memory fallback store`);
     console.log(`   (To connect to PostgreSQL, set DATABASE_URL in .env)`);

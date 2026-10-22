@@ -83,6 +83,12 @@ export function Navbar() {
                 >
                   Privacy
                 </a>
+                <a
+                  href="/#travel-inquiry"
+                  className="px-3.5 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                >
+                  Inquiry
+                </a>
               </>
             )}
           </div>

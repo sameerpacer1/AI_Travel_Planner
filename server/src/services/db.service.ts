@@ -37,9 +37,25 @@ export interface TripRecord {
   updatedAt: Date;
 }
 
+export interface InquiryRecord {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  destination: string | null;
+  travel_dates: string | null;
+  travelers_count: number | null;
+  budget: string | null;
+  message: string | null;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 // In-memory fallback stores (used automatically if PostgreSQL is unreachable during local initial setup)
 const fallbackUsers = new Map<string, UserRecord>();
 const fallbackTrips = new Map<string, TripRecord>();
+const fallbackInquiries = new Map<string, InquiryRecord>();
 
 let useFallbackStore = false;
 
@@ -364,6 +380,75 @@ export class DbService {
     }
 
     return fallbackTrips.delete(id);
+  }
+
+  // INQUIRY METHODS
+  static async createInquiry(data: {
+    name: string;
+    email: string;
+    phone?: string | null;
+    destination?: string | null;
+    travel_dates?: string | null;
+    travelers_count?: number | null;
+    budget?: string | null;
+    message?: string | null;
+  }): Promise<InquiryRecord> {
+    if (!useFallbackStore) {
+      try {
+        const item = await prisma.inquiry.create({
+          data: {
+            name: data.name,
+            email: data.email.toLowerCase(),
+            phone: data.phone || null,
+            destination: data.destination || null,
+            travel_dates: data.travel_dates || null,
+            travelers_count: data.travelers_count || 1,
+            budget: data.budget || null,
+            message: data.message || null,
+            status: 'pending',
+          },
+        });
+        return item as InquiryRecord;
+      } catch (err) {
+        console.error('Error creating inquiry via Prisma, falling back:', err);
+      }
+    }
+
+    const id = crypto.randomUUID();
+    const now = new Date();
+    const item: InquiryRecord = {
+      id,
+      name: data.name,
+      email: data.email.toLowerCase(),
+      phone: data.phone || null,
+      destination: data.destination || null,
+      travel_dates: data.travel_dates || null,
+      travelers_count: data.travelers_count || 1,
+      budget: data.budget || null,
+      message: data.message || null,
+      status: 'pending',
+      createdAt: now,
+      updatedAt: now,
+    };
+    fallbackInquiries.set(id, item);
+    return item;
+  }
+
+  static async listInquiries(): Promise<InquiryRecord[]> {
+    if (!useFallbackStore) {
+      try {
+        const items = await prisma.inquiry.findMany({
+          orderBy: { createdAt: 'desc' },
+        });
+        return items as InquiryRecord[];
+      } catch (err) {
+        console.error('Error listing inquiries via Prisma:', err);
+      }
+    }
+
+    return Array.from(fallbackInquiries.values()).sort(
+      (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+    );
   }
 
   static isUsingFallback(): boolean {

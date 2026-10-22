@@ -3,6 +3,7 @@ import { useAuth } from '../features/auth/AuthContext.js';
 import { Button } from '../components/ui/Button.js';
 import { Badge } from '../components/ui/Badge.js';
 import { FeaturedDestinationsSection } from '../features/places/FeaturedDestinationsSection.js';
+import { TravelInquirySection } from '../features/inquiry/TravelInquirySection.js';
 import {
   Sparkles,
   ArrowRight,
@@ -313,7 +314,10 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* 5. FINAL CTA */}
+      {/* 5. TRAVEL INQUIRY & CUSTOM PLAN CONSULTATION */}
+      <TravelInquirySection />
+
+      {/* 6. FINAL CTA */}
       <section className="py-20 bg-gradient-to-b from-surface to-white text-center">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">

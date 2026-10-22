@@ -7,6 +7,7 @@ import rateLimit from 'express-rate-limit';
 import authRoutes from './routes/auth.routes.js';
 import tripRoutes from './routes/trip.routes.js';
 import travelRoutes from './routes/travel.routes.js';
+import inquiryRoutes from './routes/inquiry.routes.js';
 import { errorHandler } from './middleware/error.middleware.js';
 import { env, isProd } from './config/env.js';
 import { NotFoundError } from './utils/errors.js';
@@ -66,6 +67,7 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/trips', tripRoutes);
 app.use('/api', travelRoutes);
+app.use('/api/inquiries', inquiryRoutes);
 
 // Catch-all 404 handler
 app.use((_req, _res, next) => {
