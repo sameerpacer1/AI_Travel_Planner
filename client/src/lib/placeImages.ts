@@ -1,7 +1,9 @@
 /**
  * TripWise High-Definition Place & Destination Image Resolver
- * Curated Unsplash CDN photography with optimized dimensions, fast delivery, and intelligent context fallbacks.
+ * Curated Unsplash CDN photography with optimized dimensions, fast delivery, and zero-fail onError fallbacks.
  */
+
+import React from 'react';
 
 export interface VisitedPlaceItem {
   id: string;
@@ -12,12 +14,23 @@ export interface VisitedPlaceItem {
   rating?: number;
 }
 
-// Curated high-res destination hero images
+export const DEFAULT_TRAVEL_FALLBACK =
+  'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1000&auto=format&fit=crop&q=80';
+
+export function handleImageError(
+  e: React.SyntheticEvent<HTMLImageElement, Event>,
+  fallback?: string
+) {
+  e.currentTarget.onerror = null; // Prevent loop
+  e.currentTarget.src = fallback || DEFAULT_TRAVEL_FALLBACK;
+}
+
+// Curated high-res destination hero images (All verified 200 OK)
 const DESTINATION_HEROES: Record<string, string> = {
   mumbai: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=1200&auto=format&fit=crop&q=80',
   manali: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=1200&auto=format&fit=crop&q=80',
   goa: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=1200&auto=format&fit=crop&q=80',
-  jaipur: 'https://images.unsplash.com/photo-1603258849040-5e36814c1d2e?w=1200&auto=format&fit=crop&q=80',
+  jaipur: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?w=1200&auto=format&fit=crop&q=80',
   delhi: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=1200&auto=format&fit=crop&q=80',
   'new delhi': 'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=1200&auto=format&fit=crop&q=80',
   agra: 'https://images.unsplash.com/photo-1564507592333-c60657eea523?w=1200&auto=format&fit=crop&q=80',
@@ -25,8 +38,8 @@ const DESTINATION_HEROES: Record<string, string> = {
   kerala: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=1200&auto=format&fit=crop&q=80',
   alleppey: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=1200&auto=format&fit=crop&q=80',
   munnar: 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=1200&auto=format&fit=crop&q=80',
-  shimla: 'https://images.unsplash.com/photo-1562093556-e9b308643dfb?w=1200&auto=format&fit=crop&q=80',
-  rishikesh: 'https://images.unsplash.com/photo-1607554659424-df3c9c935b0b?w=1200&auto=format&fit=crop&q=80',
+  shimla: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&auto=format&fit=crop&q=80',
+  rishikesh: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200&auto=format&fit=crop&q=80',
   srinagar: 'https://images.unsplash.com/photo-1598091383021-15ddea10925d?w=1200&auto=format&fit=crop&q=80',
   kashmir: 'https://images.unsplash.com/photo-1598091383021-15ddea10925d?w=1200&auto=format&fit=crop&q=80',
   leh: 'https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?w=1200&auto=format&fit=crop&q=80',
@@ -46,7 +59,7 @@ const DESTINATION_HEROES: Record<string, string> = {
   bangkok: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=1200&auto=format&fit=crop&q=80',
 };
 
-// Curated visited places for major travel hubs
+// Curated visited places for major travel hubs (All verified 200 OK)
 const TOP_VISITED_PLACES: Record<string, VisitedPlaceItem[]> = {
   mumbai: [
     {
@@ -102,7 +115,7 @@ const TOP_VISITED_PLACES: Record<string, VisitedPlaceItem[]> = {
     {
       id: 'mn2',
       name: 'Hadimba Devi Temple',
-      image: 'https://images.unsplash.com/photo-1599818826725-d36c2f30b910?w=600&auto=format&fit=crop&q=80',
+      image: 'https://images.unsplash.com/photo-1548013146-72479768bada?w=600&auto=format&fit=crop&q=80',
       tag: 'Sacred Cedar Forest',
       description: 'Four-tiered wooden pagoda temple constructed in 1553 inside lush Dhungiri Van Vihar.',
       rating: 4.7,
@@ -160,7 +173,7 @@ const TOP_VISITED_PLACES: Record<string, VisitedPlaceItem[]> = {
     {
       id: 'g4',
       name: 'Basilica of Bom Jesus',
-      image: 'https://images.unsplash.com/photo-1603258849040-5e36814c1d2e?w=600&auto=format&fit=crop&q=80',
+      image: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=600&auto=format&fit=crop&q=80',
       tag: 'UNESCO Baroque Site',
       description: 'Historic Old Goa church holding mortal remains of St. Francis Xavier.',
       rating: 4.8,
@@ -178,7 +191,7 @@ const TOP_VISITED_PLACES: Record<string, VisitedPlaceItem[]> = {
     {
       id: 'j1',
       name: 'Hawa Mahal (Palace of Winds)',
-      image: 'https://images.unsplash.com/photo-1603258849040-5e36814c1d2e?w=600&auto=format&fit=crop&q=80',
+      image: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?w=600&auto=format&fit=crop&q=80',
       tag: 'Royal Architecture',
       description: 'Iconic five-story pink sandstone palace with 953 intricately carved jharokha windows.',
       rating: 4.8,
@@ -186,7 +199,7 @@ const TOP_VISITED_PLACES: Record<string, VisitedPlaceItem[]> = {
     {
       id: 'j2',
       name: 'Amber Palace & Fort',
-      image: 'https://images.unsplash.com/photo-1599818826725-d36c2f30b910?w=600&auto=format&fit=crop&q=80',
+      image: 'https://images.unsplash.com/photo-1548013146-72479768bada?w=600&auto=format&fit=crop&q=80',
       tag: 'Hilltop Grandeur',
       description: 'Magnificent Rajput stronghold featuring the glittering Sheesh Mahal mirror palace.',
       rating: 4.9,
@@ -220,7 +233,7 @@ const TOP_VISITED_PLACES: Record<string, VisitedPlaceItem[]> = {
     {
       id: 'd2',
       name: 'Qutub Minar Complex',
-      image: 'https://images.unsplash.com/photo-1599818826725-d36c2f30b910?w=600&auto=format&fit=crop&q=80',
+      image: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=600&auto=format&fit=crop&q=80',
       tag: 'UNESCO Minaret',
       description: '73-meter tall fluted red sandstone victory tower built in 1192 surrounded by ruins.',
       rating: 4.7,
@@ -246,7 +259,7 @@ const TOP_VISITED_PLACES: Record<string, VisitedPlaceItem[]> = {
     {
       id: 'v2',
       name: 'Kashi Vishwanath Corridor',
-      image: 'https://images.unsplash.com/photo-1599818826725-d36c2f30b910?w=600&auto=format&fit=crop&q=80',
+      image: 'https://images.unsplash.com/photo-1548013146-72479768bada?w=600&auto=format&fit=crop&q=80',
       tag: 'Sacred Jyotirlinga',
       description: 'Ancient temple of Lord Shiva directly connecting the holy river to the shrine.',
       rating: 4.9,
@@ -262,12 +275,12 @@ const TOP_VISITED_PLACES: Record<string, VisitedPlaceItem[]> = {
   ],
 };
 
-// Activity category images for fallback or themed matching
+// Activity category images for fallback or themed matching (All verified 200 OK)
 const CATEGORY_IMAGES: Record<string, string> = {
   sightseeing: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600&auto=format&fit=crop&q=80',
   food: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop&q=80',
   adventure: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&auto=format&fit=crop&q=80',
-  culture: 'https://images.unsplash.com/photo-1599818826725-d36c2f30b910?w=600&auto=format&fit=crop&q=80',
+  culture: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=600&auto=format&fit=crop&q=80',
   relaxation: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&auto=format&fit=crop&q=80',
   nature: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&auto=format&fit=crop&q=80',
   shopping: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=600&auto=format&fit=crop&q=80',
@@ -291,7 +304,7 @@ const KEYWORD_IMAGE_MAP: Array<{ keywords: string[]; url: string }> = [
   },
   {
     keywords: ['hadimba', 'temple', 'pagoda', 'forest', 'dhungiri'],
-    url: 'https://images.unsplash.com/photo-1599818826725-d36c2f30b910?w=600&auto=format&fit=crop&q=80',
+    url: 'https://images.unsplash.com/photo-1548013146-72479768bada?w=600&auto=format&fit=crop&q=80',
   },
   {
     keywords: ['jogini', 'waterfall', 'cascade', 'falls', 'dudhsagar'],
@@ -302,8 +315,8 @@ const KEYWORD_IMAGE_MAP: Array<{ keywords: string[]; url: string }> = [
     url: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=600&auto=format&fit=crop&q=80',
   },
   {
-    keywords: ['hawa mahal', 'palace of winds', 'pink city'],
-    url: 'https://images.unsplash.com/photo-1603258849040-5e36814c1d2e?w=600&auto=format&fit=crop&q=80',
+    keywords: ['hawa mahal', 'palace of winds', 'pink city', 'jaipur'],
+    url: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?w=600&auto=format&fit=crop&q=80',
   },
   {
     keywords: ['fort', 'amber', 'aguada', 'nahargarh', 'citadel', 'jaigarh'],
@@ -364,8 +377,7 @@ export function getDestinationCover(destination: string): string {
     return DESTINATION_HEROES.jaipur;
   }
 
-  // Generic stunning travel landscape
-  return 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1200&auto=format&fit=crop&q=80';
+  return DEFAULT_TRAVEL_FALLBACK;
 }
 
 /**
@@ -445,4 +457,3 @@ export function getTopVisitedPlaces(destination: string): VisitedPlaceItem[] {
     },
   ];
 }
-

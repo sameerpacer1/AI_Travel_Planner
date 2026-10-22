@@ -11,7 +11,7 @@ import { WeatherWidget } from '../features/weather/WeatherWidget.js';
 import { MapWidget } from '../features/map/MapWidget.js';
 import { RouteOverviewCard } from '../features/route/RouteOverviewCard.js';
 import { VisitedPlacesGallery } from '../features/places/VisitedPlacesGallery.js';
-import { getDestinationCover, getActivityImage } from '../lib/placeImages.js';
+import { getDestinationCover, getActivityImage, handleImageError } from '../lib/placeImages.js';
 import { formatCurrency, formatDate, getDaysBetween } from '../lib/utils.js';
 import {
   MapPin,
@@ -191,6 +191,7 @@ export function TripDetailPage() {
           <img
             src={getDestinationCover(trip.destination)}
             alt={trip.destination}
+            onError={(e) => handleImageError(e)}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 brightness-[0.75]"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
@@ -479,6 +480,7 @@ export function TripDetailPage() {
                                   src={getActivityImage(activity.title, activity.location, activity.category, trip.destination)}
                                   alt={activity.title}
                                   loading="lazy"
+                                  onError={(e) => handleImageError(e)}
                                   className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-transparent to-black/15" />

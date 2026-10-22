@@ -9,7 +9,7 @@ import { Card, CardContent } from '../components/ui/Card.js';
 import { Skeleton } from '../components/ui/Skeleton.js';
 import { Modal } from '../components/ui/Modal.js';
 import { formatCurrency, formatDate, getDaysBetween } from '../lib/utils.js';
-import { getDestinationCover } from '../lib/placeImages.js';
+import { getDestinationCover, handleImageError } from '../lib/placeImages.js';
 import {
   PlusCircle,
   MapPin,
@@ -187,6 +187,7 @@ export function DashboardPage() {
                     <img
                       src={getDestinationCover(trip.destination)}
                       alt={trip.destination}
+                      onError={(e) => handleImageError(e)}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-black/25 to-transparent" />

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getTopVisitedPlaces, VisitedPlaceItem } from '../../lib/placeImages.js';
+import { getTopVisitedPlaces, handleImageError, VisitedPlaceItem } from '../../lib/placeImages.js';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card.js';
 import { Badge } from '../../components/ui/Badge.js';
 import { Modal } from '../../components/ui/Modal.js';
@@ -47,6 +47,7 @@ export function VisitedPlacesGallery({ destination }: VisitedPlacesGalleryProps)
                     src={place.image}
                     alt={place.name}
                     loading="lazy"
+                    onError={(e) => handleImageError(e)}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-black/20" />
@@ -117,6 +118,7 @@ export function VisitedPlacesGallery({ destination }: VisitedPlacesGalleryProps)
               <img
                 src={selectedPlace.image}
                 alt={selectedPlace.name}
+                onError={(e) => handleImageError(e)}
                 className="w-full h-full object-cover"
               />
               {selectedPlace.rating && (
