@@ -1,0 +1,212 @@
+[
+  {
+    "key": "varanasi_cover",
+    "file": "/images/places/varanasi_cover.jpg",
+    "title": "Varanasi Ghats",
+    "dest": "varanasi"
+  },
+  {
+    "key": "varanasi_aarti",
+    "file": "/images/places/varanasi_aarti.jpg",
+    "title": "Dashashwamedh Ganga Aarti",
+    "dest": "varanasi"
+  },
+  {
+    "key": "varanasi_dashashwamedh",
+    "file": "/images/places/varanasi_dashashwamedh.jpg",
+    "title": "Dashashwamedh Ghat",
+    "dest": "varanasi"
+  },
+  {
+    "key": "varanasi_kashi",
+    "file": "/images/places/varanasi_kashi.jpg",
+    "title": "Kashi Vishwanath Temple",
+    "dest": "varanasi"
+  },
+  {
+    "key": "varanasi_sarnath",
+    "file": "/images/places/varanasi_sarnath.jpg",
+    "title": "Dhamek Stupa Sarnath",
+    "dest": "varanasi"
+  },
+  {
+    "key": "jaipur_cover",
+    "file": "/images/places/jaipur_cover.jpg",
+    "title": "Hawa Mahal",
+    "dest": "jaipur"
+  },
+  {
+    "key": "jaipur_amber",
+    "file": "/images/places/jaipur_amber.jpg",
+    "title": "Amber Fort",
+    "dest": "jaipur"
+  },
+  {
+    "key": "jaipur_jalmahal",
+    "file": "/images/places/jaipur_jalmahal.jpg",
+    "title": "Jal Mahal",
+    "dest": "jaipur"
+  },
+  {
+    "key": "jaipur_nahargarh",
+    "file": "/images/places/jaipur_nahargarh.jpg",
+    "title": "Nahargarh Fort",
+    "dest": "jaipur"
+  },
+  {
+    "key": "agra_taj",
+    "file": "/images/places/agra_taj.jpg",
+    "title": "Taj Mahal",
+    "dest": "agra"
+  },
+  {
+    "key": "agra_fort",
+    "file": "/images/places/agra_fort.jpg",
+    "title": "Agra Fort",
+    "dest": "agra"
+  },
+  {
+    "key": "mumbai_cover",
+    "file": "/images/places/mumbai_cover.jpg",
+    "title": "Gateway of India",
+    "dest": "mumbai"
+  },
+  {
+    "key": "mumbai_marine_drive",
+    "file": "/images/places/mumbai_marine_drive.jpg",
+    "title": "Marine Drive",
+    "dest": "mumbai"
+  },
+  {
+    "key": "mumbai_elephanta",
+    "file": "/images/places/mumbai_elephanta.jpg",
+    "title": "Elephanta Caves",
+    "dest": "mumbai"
+  },
+  {
+    "key": "mumbai_sealink",
+    "file": "/images/places/mumbai_sealink.jpg",
+    "title": "Bandra Worli Sea Link",
+    "dest": "mumbai"
+  },
+  {
+    "key": "goa_cover",
+    "file": "/images/places/goa_cover.jpg",
+    "title": "Palolem Beach",
+    "dest": "goa"
+  },
+  {
+    "key": "goa_aguada",
+    "file": "/images/places/goa_aguada.jpg",
+    "title": "Fort Aguada",
+    "dest": "goa"
+  },
+  {
+    "key": "goa_dudhsagar",
+    "file": "/images/places/goa_dudhsagar.jpg",
+    "title": "Dudhsagar Falls",
+    "dest": "goa"
+  },
+  {
+    "key": "goa_bomjesus",
+    "file": "/images/places/goa_bomjesus.jpg",
+    "title": "Basilica of Bom Jesus",
+    "dest": "goa"
+  },
+  {
+    "key": "manali_cover",
+    "file": "/images/places/manali_cover.jpg",
+    "title": "Solang Valley",
+    "dest": "manali"
+  },
+  {
+    "key": "manali_hidimba",
+    "file": "/images/places/manali_hidimba.jpg",
+    "title": "Hidimba Devi Temple",
+    "dest": "manali"
+  },
+  {
+    "key": "manali_rohtang",
+    "file": "/images/places/manali_rohtang.jpg",
+    "title": "Rohtang Pass",
+    "dest": "manali"
+  },
+  {
+    "key": "delhi_cover",
+    "file": "/images/places/delhi_cover.jpg",
+    "title": "India Gate",
+    "dest": "delhi"
+  },
+  {
+    "key": "delhi_qutub",
+    "file": "/images/places/delhi_qutub.jpg",
+    "title": "Qutub Minar",
+    "dest": "delhi"
+  },
+  {
+    "key": "delhi_humayun",
+    "file": "/images/places/delhi_humayun.jpg",
+    "title": "Humayun Tomb",
+    "dest": "delhi"
+  },
+  {
+    "key": "delhi_redfort",
+    "file": "/images/places/delhi_redfort.jpg",
+    "title": "Red Fort",
+    "dest": "delhi"
+  },
+  {
+    "key": "kerala_cover",
+    "file": "/images/places/kerala_cover.jpg",
+    "title": "Alleppey Backwaters",
+    "dest": "kerala"
+  },
+  {
+    "key": "kerala_munnar",
+    "file": "/images/places/kerala_munnar.jpg",
+    "title": "Munnar Tea Hills",
+    "dest": "kerala"
+  },
+  {
+    "key": "kerala_athirappilly",
+    "file": "/images/places/kerala_athirappilly.jpg",
+    "title": "Athirappilly Falls",
+    "dest": "kerala"
+  },
+  {
+    "key": "rishikesh_cover",
+    "file": "/images/places/rishikesh_cover.jpg",
+    "title": "Rishikesh Ganga Ghats",
+    "dest": "rishikesh"
+  },
+  {
+    "key": "rishikesh_lakshman",
+    "file": "/images/places/rishikesh_lakshman.jpg",
+    "title": "Lakshman Jhula",
+    "dest": "rishikesh"
+  },
+  {
+    "key": "amritsar_golden",
+    "file": "/images/places/amritsar_golden.jpg",
+    "title": "Golden Temple",
+    "dest": "amritsar"
+  },
+  {
+    "key": "udaipur_cover",
+    "file": "/images/places/udaipur_cover.jpg",
+    "title": "City Palace Udaipur",
+    "dest": "udaipur"
+  },
+  {
+    "key": "udaipur_pichola",
+    "file": "/images/places/udaipur_pichola.jpg",
+    "title": "Lake Pichola",
+    "dest": "udaipur"
+  },
+  {
+    "key": "shimla_cover",
+    "file": "/images/places/shimla_cover.jpg",
+    "title": "The Ridge Shimla",
+    "dest": "shimla"
+  }
+]
