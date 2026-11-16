@@ -262,7 +262,9 @@ export function CreateTripPage() {
               </div>
               <h3 className="text-xl font-bold text-slate-900">AI Generation Notice</h3>
               <p className="text-xs text-slate-600 bg-amber-50/80 p-3 rounded-xl border border-amber-200/60 text-left">
-                {generationError}
+                {generationError.includes('503') || generationError.includes('high demand')
+                  ? 'The AI engine is temporarily experiencing high traffic spikes. Please click "Retry Generation" to complete your itinerary.'
+                  : generationError.replace(/\[GoogleGenerativeAI Error\]:[^:]*:/gi, '').trim()}
               </p>
               <p className="text-xs text-slate-500">
                 Your trip parameters have been securely saved. You can retry itinerary generation anytime or open your trip draft.

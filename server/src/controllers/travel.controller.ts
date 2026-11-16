@@ -57,7 +57,7 @@ export class TravelController {
       sendSuccess(res, {
         gemini: {
           configured: GeminiService.isConfigured(),
-          provider: 'Google Gemini 3.5 Flash Lite',
+          provider: 'Google Gemini 3.5 Flash',
         },
         weather: {
           configured: WeatherService.isConfigured(),
