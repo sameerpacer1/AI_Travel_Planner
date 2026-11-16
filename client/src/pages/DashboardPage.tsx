@@ -86,8 +86,8 @@ export function DashboardPage() {
             Manage your AI travel plans, generate new itineraries, and organize upcoming trips.
           </p>
         </div>
-        <Link to="/trips/new">
-          <Button size="md" className="gap-2 shadow-sm shadow-brand-500/20">
+        <Link to="/trips/new" className="w-full sm:w-auto">
+          <Button size="md" className="w-full sm:w-auto gap-2 shadow-sm shadow-brand-500/20">
             <PlusCircle className="w-4 h-4" />
             Plan New Trip
           </Button>
@@ -211,24 +211,13 @@ export function DashboardPage() {
 
                   <CardContent className="p-5">
                     {/* Header: Trip Details */}
-                    <div className="flex items-start justify-between gap-2 mb-3">
-                      <div>
-                        <div className="flex items-center gap-1.5 text-xs font-semibold text-brand-600 mb-1">
-                          <MapPin className="w-3.5 h-3.5" />
-                          <span>{trip.origin} → {trip.destination}</span>
-                        </div>
-                        <h3 className="text-base font-bold text-slate-900 tracking-tight group-hover:text-brand-600 transition-colors">
-                          {trip.title}
-                        </h3>
-                      </div>
-                      {trip.isGenerated ? (
-                        <Badge variant="success" className="gap-1">
-                          <Sparkles className="w-3 h-3 text-emerald-600" />
-                          Ready
-                        </Badge>
-                      ) : (
-                        <Badge variant="warning">Draft</Badge>
-                      )}
+                    <div className="mb-3">
+                      <h3 className="text-base font-bold text-slate-900 tracking-tight group-hover:text-brand-600 transition-colors">
+                        {trip.title}
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-0.5 capitalize">
+                        {trip.travelStyle} • {trip.transportPreference}
+                      </p>
                     </div>
 
                     {/* Metadata details */}

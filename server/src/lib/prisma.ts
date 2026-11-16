@@ -16,13 +16,19 @@ if (!isProd) {
   globalThis.prismaGlobal = prisma;
 }
 
-export async function checkDbConnection(): Promise<{ connected: boolean; error?: string }> {
-  try {
-    // Quick test query to verify if PostgreSQL connection is live
-    await prisma.$queryRaw`SELECT 1`;
-    return { connected: true };
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    return { connected: false, error: message };
+export async function checkDbConnection(retries = 3, delayMs = 1500): Promise<{ connected: boolean; error?: string }> {
+  let lastError = '';
+  for (let i = 1; i <= retries; i++) {
+    try {
+      // Quick test query to verify if PostgreSQL connection is live
+      await prisma.$queryRaw`SELECT 1`;
+      return { connected: true };
+    } catch (err: unknown) {
+      lastError = err instanceof Error ? err.message : String(err);
+      if (i < retries) {
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+      }
+    }
   }
+  return { connected: false, error: lastError };
 }

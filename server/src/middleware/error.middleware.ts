@@ -3,6 +3,14 @@ import { AppError } from '../utils/errors.js';
 import { sendError } from '../utils/response.js';
 import { isProd } from '../config/env.js';
 
+function sanitizeErrorMessage(msg: string): string {
+  return msg
+    .replace(/postgresql:\/\/[^@\s]+@/gi, 'postgresql://***:***@')
+    .replace(/password[:=]\s*['"]?[^'"\s]+['"]?/gi, 'password=***')
+    .replace(/sbp_oauth_[a-zA-Z0-9_-]+/gi, '***')
+    .replace(/eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/gi, '***');
+}
+
 export const errorHandler = (
   err: Error | AppError,
   _req: Request,
@@ -10,7 +18,7 @@ export const errorHandler = (
   _next: NextFunction
 ): void => {
   if (err instanceof AppError) {
-    sendError(res, err.message, err.statusCode, err.code, err.details);
+    sendError(res, sanitizeErrorMessage(err.message), err.statusCode, err.code, err.details);
     return;
   }
 
@@ -29,6 +37,6 @@ export const errorHandler = (
   // Unexpected errors
   console.error('Unhandled server error:', err);
 
-  const message = isProd ? 'Internal server error' : err.message;
-  sendError(res, message, 500, 'INTERNAL_ERROR', isProd ? undefined : err.stack);
+  const message = isProd ? 'Internal server error' : sanitizeErrorMessage(err.message);
+  sendError(res, message, 500, 'INTERNAL_ERROR', isProd ? undefined : err.stack ? sanitizeErrorMessage(err.stack) : undefined);
 };

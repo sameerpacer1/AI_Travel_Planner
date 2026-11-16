@@ -28,9 +28,30 @@ describe('Inquiry Supabase Integration Tests', () => {
     expect(res.body.data.inquiry.status).toBe('pending');
   }, 15000);
 
-  it('should list submitted inquiries from Supabase', async () => {
+  it('should reject unauthenticated access to list inquiries (401 Unauthorized)', async () => {
     const res = await request(app)
       .get('/api/inquiries');
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBe(false);
+  });
+
+  it('should list submitted inquiries from Supabase for authenticated user', async () => {
+    // Register or login a test user
+    const testEmail = `admin_tester_${Date.now()}@example.com`;
+    const regRes = await request(app)
+      .post('/api/auth/register')
+      .send({
+        name: 'Admin Tester',
+        email: testEmail,
+        password: 'SecurePassword123!',
+      });
+
+    const token = regRes.body.data.token;
+
+    const res = await request(app)
+      .get('/api/inquiries')
+      .set('Authorization', `Bearer ${token}`);
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
@@ -40,7 +61,7 @@ describe('Inquiry Supabase Integration Tests', () => {
     const found = res.body.data.inquiries.find((item: any) => item.email === 'aarav.patel@example.com');
     expect(found).toBeDefined();
     expect(found.destination).toBe('Kerala & Backwaters');
-  });
+  }, 15000);
 
   it('should reject invalid inquiry submissions (missing required fields)', async () => {
     const res = await request(app)

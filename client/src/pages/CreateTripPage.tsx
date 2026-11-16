@@ -265,7 +265,7 @@ export function CreateTripPage() {
                 {generationError}
               </p>
               <p className="text-xs text-slate-500">
-                Your trip parameters have been securely saved. You can retry once <code>GEMINI_API_KEY</code> is set in your server <code>.env</code> file, or open the trip draft.
+                Your trip parameters have been securely saved. You can retry itinerary generation anytime or open your trip draft.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
                 <Button variant="outline" size="sm" onClick={retryGeneration} className="gap-2">

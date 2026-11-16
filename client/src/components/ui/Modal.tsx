@@ -42,7 +42,7 @@ export function Modal({ isOpen, onClose, title, description, children, maxWidth 
         aria-hidden="true"
       />
       <div
-        className={`relative w-full ${maxWidths[maxWidth]} rounded-3xl bg-white p-6 shadow-float border border-slate-100 z-10`}
+        className={`relative w-full ${maxWidths[maxWidth]} max-h-[90vh] overflow-y-auto rounded-3xl bg-white p-5 sm:p-6 shadow-float border border-slate-100 z-10`}
         role="dialog"
         aria-modal="true"
       >

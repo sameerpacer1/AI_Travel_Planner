@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../features/auth/AuthContext.js';
-import { Compass, PlusCircle, LayoutDashboard, User as UserIcon, LogOut, Menu, X } from 'lucide-react';
+import { Compass, PlusCircle, LayoutDashboard, User as UserIcon, LogOut, Menu, X, MessageSquare } from 'lucide-react';
 import { Button } from '../components/ui/Button.js';
 
 export function Navbar() {
@@ -9,6 +9,22 @@ export function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  // Close mobile menu on resize to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleLogout = async () => {
     await logout();
@@ -137,8 +153,9 @@ export function Navbar() {
           <div className="flex md:hidden items-center">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none"
+              className="p-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none transition-colors"
               aria-label="Toggle navigation menu"
+              aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -148,7 +165,7 @@ export function Navbar() {
 
       {/* Mobile dropdown menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-slate-200 bg-white px-4 pt-3 pb-5 space-y-2 animate-fade-in">
+        <div className="md:hidden border-b border-slate-200 bg-white/95 backdrop-blur-md px-4 pt-3 pb-5 space-y-2 animate-fade-in shadow-lg">
           {user ? (
             <>
               <div className="px-3 py-2 border-b border-slate-100 mb-2">
@@ -158,7 +175,7 @@ export function Navbar() {
               <Link
                 to="/dashboard"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-100"
+                className="flex items-center gap-2.5 px-3 py-3 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-100 min-h-[44px] transition-colors"
               >
                 <LayoutDashboard className="w-4 h-4 text-brand-600" />
                 Dashboard
@@ -166,7 +183,7 @@ export function Navbar() {
               <Link
                 to="/trips/new"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-100"
+                className="flex items-center gap-2.5 px-3 py-3 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-100 min-h-[44px] transition-colors"
               >
                 <PlusCircle className="w-4 h-4 text-brand-600" />
                 Plan New Trip
@@ -174,7 +191,7 @@ export function Navbar() {
               <Link
                 to="/profile"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-100"
+                className="flex items-center gap-2.5 px-3 py-3 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-100 min-h-[44px] transition-colors"
               >
                 <UserIcon className="w-4 h-4 text-brand-600" />
                 Profile & Security
@@ -184,7 +201,7 @@ export function Navbar() {
                   setMobileMenuOpen(false);
                   handleLogout();
                 }}
-                className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-rose-600 hover:bg-rose-50 text-left"
+                className="w-full flex items-center gap-2.5 px-3 py-3 rounded-xl text-sm font-medium text-rose-600 hover:bg-rose-50 text-left min-h-[44px] transition-colors"
               >
                 <LogOut className="w-4 h-4" />
                 Sign out
@@ -195,32 +212,40 @@ export function Navbar() {
               <a
                 href="/#how-it-works"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-100"
+                className="block px-3 py-3 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-100 min-h-[44px] transition-colors"
               >
                 How It Works
               </a>
               <a
                 href="/#features"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-100"
+                className="block px-3 py-3 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-100 min-h-[44px] transition-colors"
               >
                 Features
               </a>
               <a
                 href="/#privacy"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-100"
+                className="block px-3 py-3 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-100 min-h-[44px] transition-colors"
               >
                 Privacy & Security
               </a>
+              <a
+                href="/#travel-inquiry"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-2 px-3 py-3 rounded-xl text-sm font-medium text-brand-700 bg-brand-50 hover:bg-brand-100 min-h-[44px] transition-colors font-semibold"
+              >
+                <MessageSquare className="w-4 h-4 text-brand-600" />
+                Travel Inquiry Form
+              </a>
               <div className="pt-2 flex flex-col gap-2">
                 <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="outline" className="w-full">
+                  <Button variant="outline" className="w-full min-h-[44px]">
                     Sign in
                   </Button>
                 </Link>
                 <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="primary" className="w-full">
+                  <Button variant="primary" className="w-full min-h-[44px]">
                     Get Started Free
                   </Button>
                 </Link>

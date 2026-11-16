@@ -3,10 +3,11 @@ import { createInquirySchema } from '../schemas/inquiry.schema.js';
 import { DbService } from '../services/db.service.js';
 import { sendSuccess } from '../utils/response.js';
 import { ValidationError } from '../utils/errors.js';
+import { requireAuth } from '../middleware/auth.middleware.js';
 
 const router = Router();
 
-// POST /api/inquiries - Submit a general or custom travel inquiry
+// POST /api/inquiries - Submit a general or custom travel inquiry (public form)
 router.post('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const parseResult = createInquirySchema.safeParse(req.body);
@@ -36,8 +37,8 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-// GET /api/inquiries - List submitted inquiries (for admin / dashboard overview)
-router.get('/', async (_req: Request, res: Response, next: NextFunction) => {
+// GET /api/inquiries - List submitted inquiries (protected: requires authenticated user/admin)
+router.get('/', requireAuth, async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const inquiries = await DbService.listInquiries();
     sendSuccess(res, { inquiries });

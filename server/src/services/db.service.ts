@@ -52,38 +52,61 @@ export interface InquiryRecord {
   updatedAt: Date;
 }
 
-// In-memory fallback stores (used automatically if PostgreSQL is unreachable during local initial setup)
+// In-memory fallback stores (used only if PostgreSQL is unreachable during offline local development)
 const fallbackUsers = new Map<string, UserRecord>();
 const fallbackTrips = new Map<string, TripRecord>();
 const fallbackInquiries = new Map<string, InquiryRecord>();
 
 let useFallbackStore = false;
 
-// Check at startup whether Prisma is connected
-async function determineDbMode(): Promise<boolean> {
+// Check at startup whether Prisma is connected with retry logic (allows Supabase pooler time to wake up)
+export async function determineDbMode(retries = 3, delayMs = 1500): Promise<boolean> {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+      useFallbackStore = false;
+      console.log('✅ Supabase PostgreSQL Database connected and active for all operations.');
+      return true;
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : String(err);
+      if (attempt < retries) {
+        console.warn(`⏳ Waiting for database connection (attempt ${attempt}/${retries})...`);
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+      } else {
+        useFallbackStore = true;
+        console.warn('⚠️  PostgreSQL connection failed. Using local in-memory fallback store:', errMsg);
+      }
+    }
+  }
+  return false;
+}
+
+// Ensure database connection is active (attempts to reconnect if previously failed)
+async function ensureDbConnection(): Promise<boolean> {
+  if (!useFallbackStore) return true;
   try {
     await prisma.$queryRaw`SELECT 1`;
     useFallbackStore = false;
+    console.log('🔄 Successfully reconnected to Supabase PostgreSQL Database!');
     return true;
-  } catch (err) {
-    useFallbackStore = true;
-    console.warn('⚠️  PostgreSQL/Neon DB connection failed or not configured. Using local in-memory fallback store for uninterrupted testing & development.');
+  } catch {
     return false;
   }
 }
 
-// Run the check asynchronously
+// Run initial check asynchronously
 determineDbMode();
 
 export class DbService {
   // USER METHODS
   static async findUserByEmail(email: string): Promise<UserRecord | null> {
+    await ensureDbConnection();
     if (!useFallbackStore) {
       try {
         const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
         return user as UserRecord | null;
       } catch (err) {
-        useFallbackStore = true;
+        console.error('❌ Prisma findUserByEmail error:', err instanceof Error ? err.message : err);
       }
     }
 
@@ -95,12 +118,13 @@ export class DbService {
   }
 
   static async findUserById(id: string): Promise<UserRecord | null> {
+    await ensureDbConnection();
     if (!useFallbackStore) {
       try {
         const user = await prisma.user.findUnique({ where: { id } });
         return user as UserRecord | null;
       } catch (err) {
-        useFallbackStore = true;
+        console.error('❌ Prisma findUserById error:', err instanceof Error ? err.message : err);
       }
     }
 
@@ -108,6 +132,7 @@ export class DbService {
   }
 
   static async createUser(data: { name: string; email: string; passwordHash: string }): Promise<UserRecord> {
+    await ensureDbConnection();
     if (!useFallbackStore) {
       try {
         const user = await prisma.user.create({
@@ -118,8 +143,13 @@ export class DbService {
           },
         });
         return user as UserRecord;
-      } catch (err) {
-        useFallbackStore = true;
+      } catch (err: unknown) {
+        console.error('❌ Prisma createUser error:', err instanceof Error ? err.message : err);
+        // If unique constraint violation, propagate so caller returns 409 Conflict
+        const prismaErr = err as { code?: string };
+        if (prismaErr?.code === 'P2002') {
+          throw err;
+        }
       }
     }
 
@@ -142,6 +172,7 @@ export class DbService {
     id: string,
     data: { name?: string; passwordHash?: string }
   ): Promise<UserRecord | null> {
+    await ensureDbConnection();
     if (!useFallbackStore) {
       try {
         const updated = await prisma.user.update({
@@ -150,7 +181,7 @@ export class DbService {
         });
         return updated as UserRecord;
       } catch (err) {
-        useFallbackStore = true;
+        console.error('❌ Prisma updateUser error:', err instanceof Error ? err.message : err);
       }
     }
 
@@ -173,6 +204,7 @@ export class DbService {
     const startDate = new Date(data.startDate);
     const endDate = new Date(data.endDate);
 
+    await ensureDbConnection();
     if (!useFallbackStore) {
       try {
         const trip = await prisma.trip.create({
@@ -197,7 +229,7 @@ export class DbService {
         });
         return trip as unknown as TripRecord;
       } catch (err) {
-        useFallbackStore = true;
+        console.error('❌ Prisma createTrip error:', err instanceof Error ? err.message : err);
       }
     }
 
@@ -228,6 +260,7 @@ export class DbService {
   }
 
   static async findTripsByUserId(userId: string): Promise<TripRecord[]> {
+    await ensureDbConnection();
     if (!useFallbackStore) {
       try {
         const trips = await prisma.trip.findMany({
@@ -236,7 +269,7 @@ export class DbService {
         });
         return trips as unknown as TripRecord[];
       } catch (err) {
-        useFallbackStore = true;
+        console.error('❌ Prisma findTripsByUserId error:', err instanceof Error ? err.message : err);
       }
     }
 
@@ -250,6 +283,7 @@ export class DbService {
   }
 
   static async findTripByIdAndUserId(id: string, userId: string): Promise<TripRecord | null> {
+    await ensureDbConnection();
     if (!useFallbackStore) {
       try {
         const trip = await prisma.trip.findFirst({
@@ -257,7 +291,7 @@ export class DbService {
         });
         return trip as unknown as TripRecord | null;
       } catch (err) {
-        useFallbackStore = true;
+        console.error('❌ Prisma findTripByIdAndUserId error:', err instanceof Error ? err.message : err);
       }
     }
 
@@ -276,6 +310,7 @@ export class DbService {
     const existing = await this.findTripByIdAndUserId(id, userId);
     if (!existing) return null;
 
+    await ensureDbConnection();
     if (!useFallbackStore) {
       try {
         const updated = await prisma.trip.update({
@@ -300,7 +335,7 @@ export class DbService {
         });
         return updated as unknown as TripRecord;
       } catch (err) {
-        useFallbackStore = true;
+        console.error('❌ Prisma updateTrip error:', err instanceof Error ? err.message : err);
       }
     }
 
@@ -338,6 +373,7 @@ export class DbService {
     const existing = await this.findTripByIdAndUserId(id, userId);
     if (!existing) return null;
 
+    await ensureDbConnection();
     if (!useFallbackStore) {
       try {
         const updated = await prisma.trip.update({
@@ -349,7 +385,7 @@ export class DbService {
         });
         return updated as unknown as TripRecord;
       } catch (err) {
-        useFallbackStore = true;
+        console.error('❌ Prisma updateTripItinerary error:', err instanceof Error ? err.message : err);
       }
     }
 
@@ -370,12 +406,13 @@ export class DbService {
     const existing = await this.findTripByIdAndUserId(id, userId);
     if (!existing) return false;
 
+    await ensureDbConnection();
     if (!useFallbackStore) {
       try {
         await prisma.trip.delete({ where: { id } });
         return true;
       } catch (err) {
-        useFallbackStore = true;
+        console.error('❌ Prisma deleteTrip error:', err instanceof Error ? err.message : err);
       }
     }
 
@@ -393,6 +430,7 @@ export class DbService {
     budget?: string | null;
     message?: string | null;
   }): Promise<InquiryRecord> {
+    await ensureDbConnection();
     if (!useFallbackStore) {
       try {
         const item = await prisma.inquiry.create({
@@ -410,7 +448,7 @@ export class DbService {
         });
         return item as InquiryRecord;
       } catch (err) {
-        console.error('Error creating inquiry via Prisma, falling back:', err);
+        console.error('❌ Prisma createInquiry error:', err instanceof Error ? err.message : err);
       }
     }
 
@@ -435,6 +473,7 @@ export class DbService {
   }
 
   static async listInquiries(): Promise<InquiryRecord[]> {
+    await ensureDbConnection();
     if (!useFallbackStore) {
       try {
         const items = await prisma.inquiry.findMany({
@@ -442,7 +481,7 @@ export class DbService {
         });
         return items as InquiryRecord[];
       } catch (err) {
-        console.error('Error listing inquiries via Prisma:', err);
+        console.error('❌ Prisma listInquiries error:', err instanceof Error ? err.message : err);
       }
     }
 
